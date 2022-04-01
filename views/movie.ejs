@@ -1,0 +1,19 @@
+<%- include ('partials/header') %>
+<h1><%=  title %></h1>
+<div>
+    <% for(movie of movies) {%>
+        <div>
+            <%= movie.title%> <%= movie.year%>
+        </div>
+    <%}%>
+</div>
+</body>
+
+
+<form action="/movie" method="POST">
+    <label for="movietitle">Titre du film</label>
+    <input type="text" name="movietitle" id="movietitle">
+    <label for="movieyear">Titre du film</label>
+    <input type="text" name="movieyear" id="movieyear">
+    <button type="submit">Ajouter</button>
+</form>

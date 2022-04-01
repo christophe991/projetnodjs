@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/style.css">
+    <title>Document</title>
+</head>
+<body>
+    <%- include ('partials/header') %>
+    <h1><%= title %></h1>
+    <div class="gallery">
+        <div class="gallery-container">
+          <img class="gallery-item gallery-item-1" src="../public/img/im1.jpg" data-index="1">
+          <img class="gallery-item gallery-item-2" src="../public/img/im2.jpg" data-index="2">
+          <img class="gallery-item gallery-item-3" src="../public/img/im3.jpg" data-index="3">
+          <img class="gallery-item gallery-item-4" src="../public/img/im4.jpg" data-index="4">
+          <img class="gallery-item gallery-item-5" src="../public/img/im5.jpg" data-index="5">
+          <img class="gallery-item gallery-item-5" src="../public/img/im6.jpg" data-index="5">
+          <img class="gallery-item gallery-item-5" src="../public/img/im7.jpg" data-index="5">
+        </div>
+        <div class="gallery-controls"></div>
+      </div>
+      <script>
+         const galleryContainer = document.querySelector('.gallery-container');
+const galleryControlsContainer = document.querySelector('.gallery-controls');
+const galleryControls = ['previous', 'next'];
+const galleryItems = document.querySelectorAll('.gallery-item');
+
+class Carousel {
+        constructor(container, items, controls) {
+            this.carouselContainer = container;
+            this.carouselControls = controls;
+            this.carouselArray = [...items];
+        }
+
+        // Update css classes for gallery
+        updateGallery() {
+            this.carouselArray.forEach(el => {
+            el.classList.remove('gallery-item-1');
+            el.classList.remove('gallery-item-2');
+            el.classList.remove('gallery-item-3');
+            el.classList.remove('gallery-item-4');
+            el.classList.remove('gallery-item-5');
+            });
+
+            this.carouselArray.slice(0, 5).forEach((el, i) => {
+            el.classList.add(`gallery-item-${i+1}`);
+            });
+        }
+
+        // Update the current order of the carouselArray and gallery
+        setCurrentState(direction) {
+
+            if (direction.className == 'gallery-controls-previous') {
+            this.carouselArray.unshift(this.carouselArray.pop());
+            } else {
+            this.carouselArray.push(this.carouselArray.shift());
+            }
+            
+            this.updateGallery();
+        }
+
+        // Construct the carousel navigation
+        // setNav() {
+            // galleryContainer.appendChild(document.createElement('ul')).className = 'gallery-nav';
+
+            // this.carouselArray.forEach(item => {
+            //   const nav = galleryContainer.lastElementChild;
+            //   nav.appendChild(document.createElement('li'));
+            // }); 
+        // }s
+
+        // Construct the carousel controls
+        setControls() {
+            this.carouselControls.forEach(control => {
+            galleryControlsContainer.appendChild(document.createElement('button')).className = `gallery-controls-${control}`;
+
+            document.querySelector(`.gallery-controls-${control}`).innerText = control;
+            });
+        }
+        
+        // Add a click event listener to trigger setCurrentState method to rearrange carousel
+        useControls() {
+            const triggers = [...galleryControlsContainer.childNodes];
+
+            triggers.forEach(control => {
+            control.addEventListener('click', e => {
+                e.preventDefault();
+
+                if (control.className == 'gallery-controls-add') {
+                const newItem = document.createElement('img');
+                const latestItem = this.carouselArray.length;
+                const latestIndex = this.carouselArray.findIndex(item => item.getAttribute('data-index') == this.carouselArray.length)+1;
+
+                // Assign the necessary properties for new gallery item
+                Object.assign(newItem,{
+                    className: 'gallery-item',
+                    src: `http://fakeimg.pl/300/?text=${this.carouselArray.length+1}`
+                });
+                newItem.setAttribute('data-index', this.carouselArray.length+1);
+
+                // Then add it to the carouselArray and update the gallery
+                this.carouselArray.splice(latestIndex, 0, newItem);
+                document.querySelector(`[data-index="${latestItem}"]`).after(newItem);
+                this.updateGallery();
+
+                } else {
+                this.setCurrentState(control);
+                }
+
+            });
+            });
+        }
+        }
+
+        const exampleCarousel = new Carousel(galleryContainer, galleryItems, galleryControls);
+
+        exampleCarousel.setControls();
+        // exampleCarousel.setNav();
+        exampleCarousel.useControls();
+
+      </script>
+    
+    
+
+</body> 
+</html>
